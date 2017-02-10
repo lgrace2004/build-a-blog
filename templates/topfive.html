@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+    <form action="blog" method="post">
+        {% for entry in entries %}
+            <div class="entry">
+                <div class="title-of-entry">{{entry.title}}</div>
+                <div class="diary-entry">{{entry.entry}}</div>
+                <br>
+                <br>
+            </div>
+        {% endfor %}
+    </form>
+
+
+
+{% endblock %}
