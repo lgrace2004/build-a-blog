@@ -1,6 +1,7 @@
 import os
 import webapp2
 import jinja2
+import time
 
 
 from google.appengine.ext import db
@@ -29,9 +30,9 @@ class MainHandler(Handler):
     def get(self):
         self.redirect('/blog')
 
-    def post(self):
-        title = self.request.get("title")
-        entry = self.request.get("entry")
+    #def post(self):
+        #title = self.request.get("title")
+        #entry = self.request.get("entry")
 
 
 class NewPost(Handler):
@@ -53,8 +54,9 @@ class NewPost(Handler):
             e = Entry(title=title, entry = entry)
             #stores new Art object in database:
             e.put()
-            #self.redirect("/blog")
-            self.response.write("You submitted! Now what?")
+            time.sleep(1)
+            self.redirect("/blog")
+
         else:
             error = "We need both title and an entry"
             self.render_newpostform(title, entry, error)
@@ -75,8 +77,20 @@ class MainBlog(Handler):
         entry = self.request.get("entry")
         self.response.write(title, entry)
 
+class ViewPostHandler(webapp2.RequestHandler):
+    def get(self, id):
+        #title = self.request.get("title")
+        # = self.request.get("entry")
+
+        blog_id= Entry.get_by_id(int(id))
+        self.response.write(blog_id.title)
+        self.response.write(blog_id.entry)
+
+
+
 app = webapp2.WSGIApplication([
     ('/' , MainHandler),
     ('/blog', MainBlog),
-    ('/newpost', NewPost)
+    ('/newpost', NewPost),
+    webapp2.Route('/blog/<id:\d+>', ViewPostHandler)
 ], debug=True)

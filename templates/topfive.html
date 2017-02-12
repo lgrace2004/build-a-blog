@@ -6,6 +6,8 @@
         {% for entry in entries %}
             <div class="entry">
                 <div class="title-of-entry">{{entry.title}}</div>
+                <a href = "/newpost">{{entry.key().id()}}</a>
+
                 <div class="diary-entry">{{entry.entry}}</div>
                 <br>
                 <br>
