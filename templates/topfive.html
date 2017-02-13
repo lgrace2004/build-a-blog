@@ -3,18 +3,18 @@
 
 
     <form action="blog" method="post">
-        {% for entry in entries %}
-            <div class="entry">
-                <div class="title-of-entry">{{entry.title}}</div>
-                <a href = "/newpost">{{entry.key().id()}}</a>
 
-                <div class="diary-entry">{{entry.entry}}</div>
-                <br>
-                <br>
-            </div>
+        {% for entry in entries %}
+
+            <ul>
+                <li class="diary-title"><a href = "/blog/{{entry.key().id()}}">{{entry.title}}</a></li>
+
+                <li><div class="diary-entry">{{entry.entry}}</div></li>
+            </ul>
+            <br>
+            <br>
+
         {% endfor %}
     </form>
-
-
 
 {% endblock %}

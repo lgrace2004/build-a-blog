@@ -30,17 +30,12 @@ class MainHandler(Handler):
     def get(self):
         self.redirect('/blog')
 
-    #def post(self):
-        #title = self.request.get("title")
-        #entry = self.request.get("entry")
 
 
 class NewPost(Handler):
 
     def render_newpostform(self, title="", entry="", error=""):
-        #run a query:
-        entries = db.GqlQuery("SELECT * from Entry ORDER BY created DESC LIMIT 5")
-        self.render("newpost.html", title=title, entry=entry, error=error, entries=entries)
+        self.render("newpost.html", title=title, entry=entry, error=error)
 
     def get(self):
         self.render_newpostform()
@@ -52,25 +47,25 @@ class NewPost(Handler):
         if title and entry:
             #creates a new instance of Entry, called e
             e = Entry(title=title, entry = entry)
-            #stores new Art object in database:
+            #stores new Entry object in database:
             e.put()
             time.sleep(1)
-            self.redirect("/blog")
+            new_route = "/blog/" + str(e.key().id())
+            self.redirect(new_route)
 
         else:
-            error = "We need both title and an entry"
+            error = "Error: please enter both a title and an entry"
             self.render_newpostform(title, entry, error)
 
 class MainBlog(Handler):
 
-    def render_topfive(self, title="", entry="", error=""):
+    def render_topfive(self, title="", entry=""):
         #run a query:
         entries = db.GqlQuery("SELECT * from Entry ORDER BY created DESC LIMIT 5")
         self.render("topfive.html", title=title, entry=entry, entries=entries)
 
     def get(self):
         self.render_topfive()
-
 
     def post(self):
         title = self.request.get("title")
@@ -79,12 +74,15 @@ class MainBlog(Handler):
 
 class ViewPostHandler(webapp2.RequestHandler):
     def get(self, id):
-        #title = self.request.get("title")
-        # = self.request.get("entry")
 
         blog_id= Entry.get_by_id(int(id))
-        self.response.write(blog_id.title)
-        self.response.write(blog_id.entry)
+        if blog_id == None:
+            error = "ERROR: No post associated with this id."
+            self.response.write(error)
+        else:
+            self.response.write(blog_id.title)
+            self.response.write("<html><body><br><br></body></html>")
+            self.response.write(blog_id.entry)
 
 
 
